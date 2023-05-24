@@ -32,6 +32,5 @@ class differentialEquation(Function):
     def eulerMethod(self) -> None:
         pass
 
-        
-mifuncion = Function("3*x-2")
-print(mifuncion.evalFunction(np.arange(-10, 10, 1)))
+def createFunction(string: str) ->Function:
+    return Function(string)
