@@ -34,7 +34,7 @@ class SlidePanel(ctk.CTkFrame, AnimatedWidget):
         #Animation status
         self.pos = self.start_pos
         self.__speed = 0.008
-        self.__delay = 10
+        self.__delay = 5
 
         #Layout
         self.place(relx = self.start_pos, y=0, relwidth = self.width, relheight = 1)
@@ -55,4 +55,19 @@ class SlidePanel(ctk.CTkFrame, AnimatedWidget):
         else:
             self.is_running = False
 
+class AnimatedButton(ctk.CTkButton, AnimatedWidget):
+    def __init__(self, parent, initial_image, final_image, corner_radius, width, height):
+        super().__init__(master=parent, text="", image=initial_image, corner_radius=corner_radius, width=width, height=height)
+        AnimatedWidget.__init__(self)
 
+        #Image definition
+        self.initial_image = initial_image
+        self.final_image = final_image
+
+    def animate_forward(self):
+        self.configure(image=self.final_image)
+        self.is_running = False
+
+    def animate_backwards(self):
+        self.configure(image=self.initial_image)
+        self.is_running = False
