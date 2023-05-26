@@ -37,12 +37,12 @@ class SlidePanel(ctk.CTkFrame, AnimatedWidget):
         self.__delay = 10
 
         #Layout
-        self.place(relx = self.start_pos, rely = 0.05, relwidth = self.width, relheight = 0.9)
+        self.place(relx = self.start_pos, y=0, relwidth = self.width, relheight = 1)
 
     def animate_forward(self):
         if self.pos < self.end_pos:
             self.pos += self.__speed
-            self.place(relx = self.pos, rely = 0.05, relwidth = self.width, relheight = 0.9)
+            self.place(relx = self.pos, y=0, relwidth = self.width, relheight = 1)
             self.after(self.__delay, self.animate_forward)
         else:
             self.is_running = False
@@ -50,7 +50,7 @@ class SlidePanel(ctk.CTkFrame, AnimatedWidget):
     def animate_backwards(self):
         if self.pos > self.start_pos:
             self.pos -= self.__speed
-            self.place(relx = self.pos, rely = 0.05, relwidth = self.width, relheight = 0.9)
+            self.place(relx = self.pos, y=0, relwidth = self.width, relheight = 1)
             self.after(self.__delay, self.animate_backwards)
         else:
             self.is_running = False
