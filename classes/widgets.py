@@ -55,6 +55,9 @@ class SlidePanel(ctk.CTkFrame, AnimatedWidget):
         else:
             self.is_running = False
 
+    def raise_view(self):
+        self.tkraise()
+
 class AnimatedButton(ctk.CTkButton, AnimatedWidget):
     def __init__(self, parent, initial_image, final_image, corner_radius, width, height):
         super().__init__(master=parent, text="", image=initial_image, corner_radius=corner_radius, width=width, height=height)

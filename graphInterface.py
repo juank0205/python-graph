@@ -1,6 +1,6 @@
 import tkinter
 from tkinter import ttk
-import functions as func
+import classes.functions as func
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)

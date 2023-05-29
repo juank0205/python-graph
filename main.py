@@ -1,6 +1,11 @@
 import customtkinter as ctk
 from PIL import Image
-from widgets import AnimatedButton, SlidePanel
+from classes.widgets import AnimatedButton, SlidePanel
+from views.views import ViewContainer
+from views.graphics import GraphicView
+from views.history import HistoryView
+from views.login import LoginView
+from views.register import RegisterView
 
 #window
 window = ctk.CTk()
@@ -10,6 +15,19 @@ ctk.set_appearance_mode('dark')
 
 #Animated widget
 animated_panel = SlidePanel(window, -0.2, 0)
+
+#Main view container and frames
+view_manager = ViewContainer(window)
+
+#Views
+graphic_view = GraphicView(view_manager)
+history_view = HistoryView(view_manager)
+login_view = LoginView(view_manager)
+register_view = RegisterView(view_manager)
+
+#Stablish the view dict
+view_manager.set_view_dict({'graphic': graphic_view, 'history': history_view, 'login': login_view, 'register': register_view})
+view_manager.change_view('graphic')
 
 #Top menu bar
 top_menu = ctk.CTkFrame(master = window, height=50)
@@ -25,6 +43,8 @@ menu_button = AnimatedButton(top_menu, menu_icon, cross_icon, 100, 30, 30)
 menu_button.place(x=20, y=10)
 
 def menu_button_command():
+    animated_panel.raise_view()
+    top_menu.tkraise()
     animated_panel.animate()
     menu_button.animate()
 
@@ -41,6 +61,7 @@ history_button = ctk.CTkButton(animated_panel, text="My Graphs")
 graph_button.pack(pady=(55, 0), padx=20, fill="x")
 euler_button.pack(pady=(10, 0), padx=20, fill="x")
 history_button.pack(pady=10, padx=20, fill="x")
+
 
 #Main loop
 window.mainloop() 

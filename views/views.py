@@ -12,6 +12,7 @@ class ViewContainer(ctk.CTkFrame):
         super().__init__(master=parent)
         self.__active_view = ""
         self.view_dict = view_dict
+        self.place(relwidth=1, relheight=1)
 
     #Setters
     def get_active_view(self):
