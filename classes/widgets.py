@@ -74,3 +74,4 @@ class AnimatedButton(ctk.CTkButton, AnimatedWidget):
     def animate_backwards(self):
         self.configure(image=self.initial_image)
         self.is_running = False
+

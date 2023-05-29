@@ -5,7 +5,7 @@ import customtkinter as ctk
 class HistoryView(View):
     def __init__(self, parent):
         super().__init__(parent )
-        self.place(y=50, relwidth=1, relheight=1)
+        self.place(relwidth=1, relheight=1)
 
         #Content to be defined
         Title = ctk.CTkLabel(master=self, text="History view")
