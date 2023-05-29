@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image
-from classes.widgets import AnimatedButton, SlidePanel
+from classes.widgets import AnimatedButton, SlidePanel, DropdownMenu
 from views.views import ViewContainer
 from views.graphics import GraphicView
 from views.graphics import EulerView
@@ -35,6 +35,9 @@ view_manager.change_view('graphic')
 top_menu = ctk.CTkFrame(master = window, height=50)
 top_menu.place(x=0, y=0, relwidth = 1)
 
+#Dropdown menu
+dropdown_menu = DropdownMenu(window, -150, 0, view_manager)
+
 #Menu content images
 user_icon = ctk.CTkImage(Image.open("./assets/user.png"))
 menu_icon = ctk.CTkImage(Image.open("./assets/menu-burger.png"))
@@ -44,22 +47,27 @@ cross_icon = ctk.CTkImage(Image.open("./assets/cross.png"))
 menu_button = AnimatedButton(top_menu, menu_icon, cross_icon, 100, 30, 30)
 menu_button.place(x=20, y=10)
 
+#Function for menu buttons
 def menu_button_command():
     animated_panel.raise_view()
     top_menu.tkraise()
     animated_panel.animate()
     menu_button.animate()
 
-menu_button.configure(command=menu_button_command)
-
-user_button = ctk.CTkButton(top_menu, text="", image=user_icon, corner_radius=100, width=30, height=30)
-user_button.place(relx=0.95, y=25, anchor="e")
-
-#Function for menu buttons
 def change_view(name):
     view_manager.change_view(name)
     animated_panel.animate()
     menu_button.animate()
+
+def dropdown():
+    dropdown_menu.raise_view()
+    top_menu.tkraise()
+    dropdown_menu.animate()
+
+menu_button.configure(command=menu_button_command)
+
+user_button = ctk.CTkButton(top_menu, text="", image=user_icon, corner_radius=100, width=30, height=30, command=dropdown)
+user_button.place(relx=0.95, y=25, anchor="e")
 
 #Menu content
 graph_button = ctk.CTkButton(animated_panel, text="Graph Function", command=lambda: change_view("graphic"))
@@ -69,7 +77,6 @@ history_button = ctk.CTkButton(animated_panel, text="My Graphs", command=lambda:
 graph_button.pack(pady=(55, 0), padx=20, fill="x")
 euler_button.pack(pady=(10, 0), padx=20, fill="x")
 history_button.pack(pady=10, padx=20, fill="x")
-
 
 #Main loop
 window.mainloop() 

@@ -75,3 +75,63 @@ class AnimatedButton(ctk.CTkButton, AnimatedWidget):
         self.configure(image=self.initial_image)
         self.is_running = False
 
+class DropdownMenu(ctk.CTkFrame, AnimatedWidget):
+    def __init__(self, parent, start_pos, end_pos, view_manager):
+        #Properties
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.height = abs(start_pos-end_pos)
+        self.view_manager = view_manager
+
+        #Colors
+        self.__color1 = '#2b2b2b'
+        self.__color2 = '#333333'
+        
+        super().__init__(master = parent, height=self.height, cursor="hand2")
+        AnimatedWidget.__init__(self)
+
+        #Animation status
+        self.pos = self.start_pos
+        self.__speed = 2
+        self.__delay = 5
+
+        #Layout
+        self.place(y=self.start_pos, relx=0.8, relwidth=0.2)
+
+        #Content
+        login_button = ctk.CTkLabel(master=self, text="Login", height=50, cursor="hand2")
+        login_button.place(y=50, relwidth=1)
+        register_button = ctk.CTkLabel(master=self, text="Register", height=50, cursor="hand2")
+        register_button.place(y=100, relwidth=1)
+
+        login_button.bind("<Button-1>", lambda e: self.change_view("login"))
+        register_button.bind("<Button-1>", lambda e: self.change_view("register"))
+
+        #Hover
+        login_button.bind("<Enter>", lambda e: login_button.configure(fg_color=self.__color2))
+        login_button.bind("<Leave>", lambda e: login_button.configure(fg_color=self.__color1))
+        register_button.bind("<Enter>", lambda e: register_button.configure(fg_color=self.__color2))
+        register_button.bind("<Leave>", lambda e: register_button.configure(fg_color=self.__color1))
+
+    def animate_forward(self):
+        if self.pos < self.end_pos:
+            self.pos += self.__speed
+            self.place(y=self.pos, relx=0.8)
+            self.after(self.__delay, self.animate_forward)
+        else:
+            self.is_running = False
+
+    def animate_backwards(self):
+        if self.pos > self.start_pos:
+            self.pos -= self.__speed
+            self.place(y=self.pos, relx=0.8)
+            self.after(self.__delay, self.animate_backwards)
+        else:
+            self.is_running = False
+
+    def raise_view(self):
+        self.tkraise()
+
+    def change_view(self, name):
+        self.view_manager.change_view(name)
+        self.animate()
