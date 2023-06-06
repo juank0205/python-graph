@@ -15,8 +15,8 @@ class GraphicView(View):
     def __init__(self, parent):
         super().__init__(parent )
         self.place(relwidth=1, relheight=1)
-        self.x_min = -10
-        self.x_max = 10
+        self.x_min = -20
+        self.x_max = 20
         self.y_min = -10
         self.y_max = 10
         self.__function = Function("")
@@ -71,7 +71,7 @@ class GraphicView(View):
         self.ax.set_ylabel('$y$', size=14, y=1, labelpad=-30, rotation=0)
 
         #set self.axes ticks
-        self.ax.xaxis.set_major_locator(ticker.MaxNLocator(11))
+        self.ax.xaxis.set_major_locator(ticker.MaxNLocator(21))
         self.ax.yaxis.set_major_locator(ticker.MaxNLocator(11))
         yticks = self.ax.get_yticks()
         self.ax.set_yticks([tick for tick in yticks if tick != 0])
@@ -94,13 +94,15 @@ class EulerView(GraphicView):
     def __init__(self, parent):
         View.__init__(self, parent)
         self.place(relwidth=1, relheight=1)
-        self.x_min = -10
-        self.x_max = 10
+        self.x_min = -20
+        self.x_max = 20
         self.y_min = -10
         self.y_max = 10
         self.initialPoint = (0, 0)
         self.__function = differentialEquation("", self.initialPoint)
         self.__string = ctk.StringVar(parent, value='')
+        self.initialPoint_x = ctk.DoubleVar(parent, value=0)
+        self.initialPoint_y = ctk.DoubleVar(parent, value=0)
 
         #Content to be defined
         self.graph_frame = ctk.CTkFrame(master=self)
@@ -133,11 +135,21 @@ class EulerView(GraphicView):
         self.function_entry = ctk.CTkEntry(master=self, textvariable=self.__string)
         self.function_entry.pack(pady=10)
 
+        initial_point_frame = ctk.CTkFrame(master=self, fg_color=self._fg_color)
+        initial_point_frame.pack()
+        ctk.CTkLabel(master=initial_point_frame, text="Initial point: ").pack(side='left')
+        self.initial_point_entry_x = ctk.CTkEntry(master=initial_point_frame, textvariable=self.initialPoint_x, width=30)
+        self.initial_point_entry_x.pack(side='left', padx=5)
+        ctk.CTkLabel(master=initial_point_frame, text=", ").pack(side='left')
+        self.initial_point_entry_y = ctk.CTkEntry(master=initial_point_frame, textvariable=self.initialPoint_y, width=30)
+        self.initial_point_entry_y.pack(side='left', padx=5)
+        
+
         ctk.CTkButton(master=self, text='Graph', command=self.change_graph).pack(pady=10)
 
     def change_graph(self):
-        print(self.__string.get())
         self.__function.set_string(self.__string.get())
+        self.__function.set_initialPoint(self.initialPoint_x.get(), self.initialPoint_y.get())
         self.ax.cla()
         self.set_plot_style()
         self.__function.eulerMethod(self.ax.plot)

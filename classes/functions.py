@@ -47,7 +47,7 @@ class differentialEquation(Function):
         return([x, xi], [y, yi])
         
     def eulerMethod(self, plot_callback):
-        xRange = np.arange(self.initialPoint[0], 10, self.__step)
+        xRange = np.arange(self.initialPoint[0], 20, self.__step)
         yi = self.initialPoint[1]
         try:
             for i in range(len(xRange)-1):
@@ -59,7 +59,7 @@ class differentialEquation(Function):
             print("Invalid function")
             return
 
-        xRange = np.arange(self.initialPoint[0], -10, self.__step*(-1))
+        xRange = np.arange(self.initialPoint[0], -20, self.__step*(-1))
         yi = self.initialPoint[1]
         try:
             for i in range(len(xRange)-1):
