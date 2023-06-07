@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import classes.sql as sql
 from PIL import Image
 from classes.widgets import AnimatedButton, SlidePanel, DropdownMenu
 from views.views import ViewContainer
@@ -7,6 +8,10 @@ from views.graphics import EulerView
 from views.history import HistoryView
 from views.login import LoginView
 from views.register import RegisterView
+
+#Connection to database
+connector = sql.SqlConnector("localhost", "user", "123456789", "python-graph")
+
 
 #window
 window = ctk.CTk()
