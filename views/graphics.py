@@ -43,7 +43,7 @@ class GraphicView(View):
         toolbar.update()
 
         self.canvas.mpl_connect(
-            "key_press_event", lambda event: print(f"you pressed {event.key}"))
+            "key_press_event", lambda e: print("", end=""))
         self.canvas.mpl_connect("key_press_event", key_press_handler)
 
         self.graph_frame.pack()

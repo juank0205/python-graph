@@ -3,19 +3,18 @@ import customtkinter as ctk
 
 class ChartFrame(ctk.CTkFrame):
     def __init__(self, parent, id, string, index):
-        super().__init__(master=parent, height=40, width=parent.winfo_width())
+        super().__init__(master=parent, width=parent.winfo_width, height=40)
+        self.pack()
 
         self.id = id
-        label_index = ctk.CTkLabel(master=self, text=index)
+
+        index = ctk.CTkLabel(master=self, text=index)
         string = ctk.CTkLabel(master=self, text=string)
         delete = ctk.CTkButton(master=self, text="Delete", command=self.delete)
 
-        label_index.place(relx=0.05, relwidth=0.1)
+        index.place(relx=0.05, relwidth=0.1)
         string.place(relx=0.15, relwidth=0.7)
         delete.place(relx=0.85, relwidth=0.1)
-
-        self.pack()
-
 
     def delete(self):
         print("Luego")
@@ -29,19 +28,20 @@ class HistoryView(View):
         self.sql_connector = sql_connector
         self.user = user
 
-        self.scrollable_frame = ctk.CTkScrollableFrame(master=self, label_text="My Graphs")
-        self.scrollable_frame.place(relwidth=0.9, relx=0.05, y=10)
+        print(self.winfo_width())
+
+        self.scrollable_frame = ctk.CTkScrollableFrame(master=self, label_text="My Graphs", width=int(self.winfo_width()*0.9), height=int(self.winfo_height()*0.9))
         self.graphs = []
         self.get_graphs()
 
     def get_graphs(self):
-        for frame in self.scrollable_frame.winfo_children():
+        for frame in self.winfo_children():
             frame.destroy()
         self.graphs = self.sql_connector.get_user_graphs(self.user.get_id())
         for (index, graph) in enumerate(self.graphs):
-            ChartFrame(self.scrollable_frame, graph[0], graph[1], index+1)
-        
+            ChartFrame(self, graph[0], graph[1], index+1).pack()
+
     def delete_graphs(self):
         self.graphs = []
-        for frame in self.scrollable_frame.winfo_children():
+        for frame in self.winfo_children():
             frame.destroy()

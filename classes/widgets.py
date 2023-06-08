@@ -76,12 +76,13 @@ class AnimatedButton(ctk.CTkButton, AnimatedWidget):
         self.is_running = False
 
 class DropdownMenu(ctk.CTkFrame, AnimatedWidget):
-    def __init__(self, parent, start_pos, end_pos, view_manager):
+    def __init__(self, parent, start_pos, end_pos, view_manager, user):
         #Properties
         self.start_pos = start_pos
         self.end_pos = end_pos
         self.height = abs(start_pos-end_pos)
         self.view_manager = view_manager
+        self.user = user
 
         #Colors
         self.__color1 = '#2b2b2b'
@@ -99,19 +100,27 @@ class DropdownMenu(ctk.CTkFrame, AnimatedWidget):
         self.place(y=self.start_pos, relx=0.8, relwidth=0.2)
 
         #Content
-        login_button = ctk.CTkLabel(master=self, text="Login", height=50, cursor="hand2")
-        login_button.place(y=50, relwidth=1)
-        register_button = ctk.CTkLabel(master=self, text="Register", height=50, cursor="hand2")
-        register_button.place(y=100, relwidth=1)
+        self.login_button = ctk.CTkLabel(master=self, text="Login", height=50, cursor="hand2")
+        self.register_button = ctk.CTkLabel(master=self, text="Register", height=50, cursor="hand2")
 
-        login_button.bind("<Button-1>", lambda e: self.change_view("login"))
-        register_button.bind("<Button-1>", lambda e: self.change_view("register"))
+        self.logout_button = ctk.CTkLabel(master=self, text="Logout", height=50, cursor="hand2")
+        self.username = ctk.CTkLabel(master=self, text="", height=50)
+
+        self.active_state = [self.login_button, self.register_button]
+
+        self.login_button.bind("<Button-1>", lambda e: self.change_view("login"))
+        self.logout_button.bind("<Button-1>", lambda e: self.logout())
+        self.register_button.bind("<Button-1>", lambda e: self.change_view("register"))
 
         #Hover
-        login_button.bind("<Enter>", lambda e: login_button.configure(fg_color=self.__color2))
-        login_button.bind("<Leave>", lambda e: login_button.configure(fg_color=self.__color1))
-        register_button.bind("<Enter>", lambda e: register_button.configure(fg_color=self.__color2))
-        register_button.bind("<Leave>", lambda e: register_button.configure(fg_color=self.__color1))
+        self.login_button.bind("<Enter>", lambda e: self.login_button.configure(fg_color=self.__color2))
+        self.login_button.bind("<Leave>", lambda e: self.login_button.configure(fg_color=self.__color1))
+        self.logout_button.bind("<Enter>", lambda e: self.login_button.configure(fg_color=self.__color2))
+        self.logout_button.bind("<Leave>", lambda e: self.login_button.configure(fg_color=self.__color1))
+        self.register_button.bind("<Enter>", lambda e: self.register_button.configure(fg_color=self.__color2))
+        self.register_button.bind("<Leave>", lambda e: self.register_button.configure(fg_color=self.__color1))
+
+        self.change_content()
 
     def animate_forward(self):
         if self.pos < self.end_pos:
@@ -131,6 +140,16 @@ class DropdownMenu(ctk.CTkFrame, AnimatedWidget):
 
     def raise_view(self):
         self.tkraise()
+
+    def change_content(self):
+        self.username.configure(text=self.user.username)
+        self.active_state = [self.username, self.logout_button] if self.user.loggedIn else [self.login_button, self.register_button]
+        for (index, button) in enumerate(self.active_state):
+            button.place(relwidth=1, y=50*index+50)
+
+    def logout(self):
+        self.change_view("login")
+        self.user.logout()
 
     def change_view(self, name):
         self.view_manager.change_view(name)

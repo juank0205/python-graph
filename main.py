@@ -1,5 +1,6 @@
 import customtkinter as ctk
 import classes.sql as sql
+import classes.user 
 from PIL import Image
 from classes.widgets import AnimatedButton, SlidePanel, DropdownMenu
 from views.views import ViewContainer
@@ -12,6 +13,8 @@ from views.register import RegisterView
 #Connection to database
 connector = sql.SqlConnector("localhost", "user", "123456789", "python-graph")
 
+#Define user
+user = classes.user.User()
 
 #window
 window = ctk.CTk()
@@ -28,8 +31,8 @@ view_manager = ViewContainer(window)
 #Views
 graphic_view = GraphicView(view_manager)
 euler_view = EulerView(view_manager)
-history_view = HistoryView(view_manager)
-login_view = LoginView(view_manager)
+history_view = HistoryView(view_manager, connector, user)
+login_view = LoginView(view_manager, connector, user)
 register_view = RegisterView(view_manager)
 
 #Stablish the view dict
@@ -41,7 +44,18 @@ top_menu = ctk.CTkFrame(master = window, height=50)
 top_menu.place(x=0, y=0, relwidth = 1)
 
 #Dropdown menu
-dropdown_menu = DropdownMenu(window, -150, 0, view_manager)
+dropdown_menu = DropdownMenu(window, -150, 0, view_manager, user)
+
+def login_callback():
+    dropdown_menu.change_content()
+    view_manager.change_view('history')
+    history_view.get_graphs()
+
+def logout_callback():
+    dropdown_menu.change_content()
+    view_manager.change_view('graphic')
+
+user.set_callback(login_callback, logout_callback)
 
 #Menu content images
 user_icon = ctk.CTkImage(Image.open("./assets/user.png"))

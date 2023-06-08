@@ -1,11 +1,13 @@
+from matplotlib import use
 from views.views import View
 import customtkinter as ctk
 
-        #Background color = 242424
 class LoginView(View):
-    def __init__(self, parent):
+    def __init__(self, parent, sql_connection, user):
         super().__init__(parent)
         self.place(relwidth=1, relheight=1)
+        self.sql_connection = sql_connection
+        self.user = user
         self.__username = ctk.StringVar(parent, value='')
         self.__password = ctk.StringVar(parent, value='')
 
@@ -26,4 +28,4 @@ class LoginView(View):
         password_entry.bind('<Return>', lambda a: self.submit())
 
     def submit(self):
-        print(self.__username.get(), self.__password.get())
+        self.user.login(self.__username.get(), self.__password.get(), self.sql_connection)
