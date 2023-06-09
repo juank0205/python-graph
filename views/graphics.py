@@ -12,17 +12,22 @@ import numpy as np
 
 
 class GraphicView(View):
-    def __init__(self, parent):
+    def __init__(self, parent, sql_connector, user):
         super().__init__(parent )
         self.place(relwidth=1, relheight=1)
         self.x_min = -20
         self.x_max = 20
         self.y_min = -10
         self.y_max = 10
+
         self.__function = Function("")
         self.__string = ctk.StringVar(parent, value='')
+        self.refresh_callback = lambda: print("")
 
-        #Content to be defined
+        self.parent = parent
+        self.user = user
+        self.sql_connector = sql_connector
+
         self.graph_frame = ctk.CTkFrame(master=self)
         self.function_container = ctk.CTkFrame(master = self, width=300, height=50)
         self.function_input = ctk.CTkEntry(master = self.function_container, width=220, height=30)
@@ -54,6 +59,9 @@ class GraphicView(View):
         self.function_entry.pack(pady=10)
 
         ctk.CTkButton(master=self, text='Graph', command=self.change_graph).pack(pady=10)
+    
+    def set_refresh_callback(self, callback):
+        self.refresh_callback = callback
 
     def set_plot_style(self):
 
@@ -83,15 +91,33 @@ class GraphicView(View):
 
     def change_graph(self):
         self.__function.set_string(self.__string.get())
-        x_data, y_data = self.__function.evalFunction(np.arange(-10, 10, 0.1))
+        try:
+            x_data, y_data = self.__function.evalFunction(np.arange(-20, 20, 0.1))
+            self.ax.cla()
+            self.set_plot_style()
+            self.ax.plot(x_data, y_data)
+            self.canvas.draw()
+            self.save_graph()
+        except Exception as e:
+            print(e)
+
+    def change_graph_history(self, string):
+        self.parent.change_view('graphic')
+        self.__function.set_string(string)
+        x_data, y_data = self.__function.evalFunction(np.arange(-20, 20, 0.1))
         self.ax.cla()
         self.set_plot_style()
         self.ax.plot(x_data, y_data)
         self.canvas.draw()
+
+    def save_graph(self):
+        if self.user.loggedIn:
+            self.sql_connector.insert_graph(self.user.get_id(), self.__function.string)
+            self.refresh_callback()
         
 
 class EulerView(GraphicView):
-    def __init__(self, parent):
+    def __init__(self, parent, sql_connector, user):
         View.__init__(self, parent)
         self.place(relwidth=1, relheight=1)
         self.x_min = -20
@@ -99,6 +125,10 @@ class EulerView(GraphicView):
         self.y_min = -10
         self.y_max = 10
         self.initialPoint = (0, 0)
+
+        self.parent = parent
+        self.sql_connector = sql_connector
+        self.user = user
         self.__function = differentialEquation("", self.initialPoint)
         self.__string = ctk.StringVar(parent, value='')
         self.initialPoint_x = ctk.DoubleVar(parent, value=0)
@@ -143,15 +173,31 @@ class EulerView(GraphicView):
         ctk.CTkLabel(master=initial_point_frame, text=", ").pack(side='left')
         self.initial_point_entry_y = ctk.CTkEntry(master=initial_point_frame, textvariable=self.initialPoint_y, width=30)
         self.initial_point_entry_y.pack(side='left', padx=5)
-        
 
         ctk.CTkButton(master=self, text='Graph', command=self.change_graph).pack(pady=10)
 
     def change_graph(self):
-        self.__function.set_string(self.__string.get())
-        self.__function.set_initialPoint(self.initialPoint_x.get(), self.initialPoint_y.get())
+        try:
+            self.__function.set_string(self.__string.get())
+            self.__function.set_initialPoint(self.initialPoint_x.get(), self.initialPoint_y.get())
+            self.ax.cla()
+            self.set_plot_style()
+            self.__function.eulerMethod(self.ax.plot)
+            self.canvas.draw()
+            self.save_graph()
+        except Exception as e:
+            print(e) 
+
+    def change_graph_history(self, string, initial_x, initial_y):
+        self.parent.change_view('euler')
+        self.__function.set_string(string)
+        self.__function.set_initialPoint(initial_x, initial_y)
         self.ax.cla()
         self.set_plot_style()
         self.__function.eulerMethod(self.ax.plot)
         self.canvas.draw()
 
+    def save_graph(self):
+        if self.user.loggedIn:
+            self.sql_connector.insert_differential_equation(self.user.get_id(), self.__function.string, self.__function.get_initial_x(), self.__function.get_initial_y())
+            self.refresh_callback()

@@ -18,7 +18,7 @@ class Function(object):
             yArray = eval(self.string, {'x': xArray, 'np': np, 'math': math} ) if not(self.__isDigit) else [float(self.string)]*len(xArray)
             return (xArray, yArray)
         except:
-            return (0, 0)
+            raise Exception("Not valid")
         
 
 class differentialEquation(Function):
@@ -27,6 +27,12 @@ class differentialEquation(Function):
         self.initialPoint = initialPoint
         self.__step = 0.1 
         self.__isDigit = True
+
+    def get_initial_x(self):
+        return self.initialPoint[0]
+
+    def get_initial_y(self):
+        return self.initialPoint[1]
 
     def set_string(self, string):
         self.string = string
@@ -41,7 +47,7 @@ class differentialEquation(Function):
             return (xArray, yArray)
         except:
             print("Not valid")
-            return(0, 0)
+            raise Exception("Not valid")
 
     def __plotStep(self, x, y, xi, yi):
         return([x, xi], [y, yi])
@@ -57,8 +63,8 @@ class differentialEquation(Function):
                 yi+=m*self.__step
         except:
             print("Invalid function")
-            return
-
+            raise Exception("Not valid")
+        
         xRange = np.arange(self.initialPoint[0], -20, self.__step*(-1))
         yi = self.initialPoint[1]
         try:
@@ -69,7 +75,7 @@ class differentialEquation(Function):
                 yi-=m*self.__step
         except:
             print("Invalid function")
-            return
+            raise Exception("Not valid")
 
 
 def createFunction(string: str) ->Function:

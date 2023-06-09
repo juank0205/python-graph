@@ -146,6 +146,7 @@ class DropdownMenu(ctk.CTkFrame, AnimatedWidget):
         self.active_state = [self.username, self.logout_button] if self.user.loggedIn else [self.login_button, self.register_button]
         for (index, button) in enumerate(self.active_state):
             button.place(relwidth=1, y=50*index+50)
+            button.tkraise()
 
     def logout(self):
         self.change_view("login")

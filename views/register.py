@@ -3,9 +3,12 @@ from views.views import View
 import customtkinter as ctk
 
 class RegisterView(View):
-    def __init__(self, parent):
+    def __init__(self, parent, sql_connection, user):
         super().__init__(parent )
         self.place(relwidth=1, relheight=1)
+
+        self.user = user
+        self.sql_connection = sql_connection
         self.__username = ctk.StringVar(parent, value='')
         self.__password = ctk.StringVar(parent, value='')
 
@@ -26,4 +29,4 @@ class RegisterView(View):
         password_entry.bind('<Return>', lambda a: self.submit())
 
     def submit(self):
-        print(self.__username.get(), self.__password.get())
+        self.user.register(self.__username.get(), self.__password.get(), self.sql_connection) 

@@ -27,10 +27,10 @@ class SqlConnector(object):
         try:
             self.cursor.execute(f'INSERT INTO users (username, password) VALUES ("{username}", "{password}");')
             self.db.commit()
-            return True
+            response = self.login(username, password)
+            return response
         except:
             self.db.rollback()
-            return False
 
     def insert_graph(self, id:int , string:str):
         try:

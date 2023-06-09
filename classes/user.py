@@ -23,8 +23,16 @@ class User(object):
             self.loggedIn = True
             self.login_callback()
 
+    def register(self, username, password, sql_connection:sql.SqlConnector):
+        response = sql_connection.register(username, password)
+        if len(response) > 0:
+            self.__id = response[0][0]
+            self.username = response[0][1]
+            self.loggedIn = True
+            self.login_callback()
+
     def logout(self):
         self.__id = 0
         self.username = ""
         self.loggedIn = False
-        self.login_callback()
+        self.logout_callback()

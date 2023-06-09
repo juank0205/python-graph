@@ -29,11 +29,14 @@ animated_panel = SlidePanel(window, -0.2, 0)
 view_manager = ViewContainer(window)
 
 #Views
-graphic_view = GraphicView(view_manager)
-euler_view = EulerView(view_manager)
-history_view = HistoryView(view_manager, connector, user)
+graphic_view = GraphicView(view_manager, connector, user)
+euler_view = EulerView(view_manager, connector, user)
+history_view = HistoryView(view_manager, connector, user, graphic_view, euler_view)
 login_view = LoginView(view_manager, connector, user)
-register_view = RegisterView(view_manager)
+register_view = RegisterView(view_manager, connector, user)
+
+graphic_view.set_refresh_callback(history_view.get_graphs)
+euler_view.set_refresh_callback(history_view.get_graphs_DE)
 
 #Stablish the view dict
 view_manager.set_view_dict({'graphic': graphic_view, 'euler': euler_view, 'history': history_view, 'login': login_view, 'register': register_view})
@@ -50,9 +53,12 @@ def login_callback():
     dropdown_menu.change_content()
     view_manager.change_view('history')
     history_view.get_graphs()
+    history_view.get_graphs_DE()
 
 def logout_callback():
     dropdown_menu.change_content()
+    history_view.delete_graphs()
+    history_view.delete_graphs_DE()
     view_manager.change_view('graphic')
 
 user.set_callback(login_callback, logout_callback)
