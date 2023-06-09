@@ -11,7 +11,10 @@ from views.login import LoginView
 from views.register import RegisterView
 
 #Connection to database
-connector = sql.SqlConnector("localhost", "user", "123456789", "python-graph")
+
+#Use when connecting from db4free 
+connector = sql.SqlConnector("db4free.net", "remotest123", "test123456789", "pythongraph")
+# connector = sql.SqlConnector("python-graph.com.mialias.net", "mypythong85", "jkeh3210151", "python-graph")
 
 #Define user
 user = classes.user.User()
