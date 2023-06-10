@@ -2,13 +2,16 @@
 ## About
 This project implements a graphical interface for graphing mathematical functions or differential equations.<br>
 The input of any mathematical expression **must be done in python syntax**.<br>
+
 ***This doesn't work***<br>
 > 3x+4<br>
+
 ***This works***<br>
 > 3\*x+4
 ## Mathematical expressions
 You can use mathematical expressions included in numpy and the math library, such as sin() or cos(), just express them as np.sin() for example. <br>
-This also works
+
+***This also works***
 > 2\*np.sin(x)\*\*2-3
 ## Installation
 All the dependencies are listed in the `requirements.txt` file. To install them you can run this command inside a python virtual environment or install them globally if you prefer to do so.<br>
