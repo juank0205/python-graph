@@ -13,8 +13,9 @@ from views.register import RegisterView
 #Connection to database
 
 #Use when connecting from db4free 
+print("Connecting to database...")
+print("This may take a minute to complete, im using a free domain")
 connector = sql.SqlConnector("db4free.net", "remotest123", "test123456789", "pythongraph")
-# connector = sql.SqlConnector("python-graph.com.mialias.net", "mypythong85", "jkeh3210151", "python-graph")
 
 #Define user
 user = classes.user.User()
