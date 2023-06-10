@@ -1,5 +1,10 @@
 import numpy as np
 import math
+
+#Main structure of a function
+#This functions need to have x as the independant variable
+#Since the string parsing is done automatically by eval(), the input must be done in python syntax.
+#I know this is a lazy solution
 class Function(object):
     def __init__(self, string:str) -> None:
         self.string = string
@@ -15,18 +20,22 @@ class Function(object):
 
     def evalFunction(self, xArray) -> tuple:
         try:
+            #In case that just a number is passed as a string, the return must be treated separately to ensure that a tuple of arrays is always returned
             yArray = eval(self.string, {'x': xArray, 'np': np, 'math': math} ) if not(self.__isDigit) else [float(self.string)]*len(xArray)
             return (xArray, yArray)
         except:
             raise Exception("Not valid")
         
-
+#Uses the euler method to "solve" a differential equation given an initial value.
+#This equations only recieve y and t as variables, since they are in the form dy/dt=(...)
 class differentialEquation(Function):
     def __init__(self, string: str, initialPoint: tuple) -> None:
         super().__init__(string) 
         self.initialPoint = initialPoint
+
+        #Step for the eulers method calculations
+        #The lower, the more precise. But will also take more calculations
         self.__step = 0.1 
-        self.__isDigit = True
 
     def get_initial_x(self):
         return self.initialPoint[0]
@@ -49,10 +58,13 @@ class differentialEquation(Function):
             print("Not valid")
             raise Exception("Not valid")
 
+    #Takes two point coordinates and returns in in a format to be plotted by matplotlib
     def __plotStep(self, x, y, xi, yi):
         return([x, xi], [y, yi])
         
+    #Since the euler method needs to graph a single line per iteration, a plotting callback is needed
     def eulerMethod(self, plot_callback):
+        #Starts plotting to the right of the initial point
         xRange = np.arange(self.initialPoint[0], 20, self.__step)
         yi = self.initialPoint[1]
         try:
@@ -65,6 +77,7 @@ class differentialEquation(Function):
             print("Invalid function")
             raise Exception("Not valid")
         
+        #Now to the left of the initial piont
         xRange = np.arange(self.initialPoint[0], -20, self.__step*(-1))
         yi = self.initialPoint[1]
         try:
@@ -77,6 +90,3 @@ class differentialEquation(Function):
             print("Invalid function")
             raise Exception("Not valid")
 
-
-def createFunction(string: str) ->Function:
-    return Function(string)

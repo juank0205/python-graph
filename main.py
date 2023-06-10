@@ -39,6 +39,7 @@ history_view = HistoryView(view_manager, connector, user, graphic_view, euler_vi
 login_view = LoginView(view_manager, connector, user)
 register_view = RegisterView(view_manager, connector, user)
 
+#Set the callbacks to update the graphing history in database
 graphic_view.set_refresh_callback(history_view.get_graphs)
 euler_view.set_refresh_callback(history_view.get_graphs_DE)
 
@@ -53,6 +54,7 @@ top_menu.place(x=0, y=0, relwidth = 1)
 #Dropdown menu
 dropdown_menu = DropdownMenu(window, -150, 0, view_manager, user)
 
+#Define the login and logout procedure and assign them to the user
 def login_callback():
     dropdown_menu.change_content()
     view_manager.change_view('history')

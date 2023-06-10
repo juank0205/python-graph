@@ -1,5 +1,6 @@
 import customtkinter as ctk
 
+#The template for any animated widget
 class AnimatedWidget(object):
     def __init__(self):
         self.is_running = False

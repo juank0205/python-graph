@@ -67,7 +67,3 @@ class SqlConnector(object):
             self.db.rollback()
             print("Failed to insert data: ", error)
             return []
-
-# sql = SqlConnector("localhost", "user", "123456789", "python-graph")
-# list = sql.login("test", "123")
-# print(list)

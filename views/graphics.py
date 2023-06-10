@@ -15,19 +15,24 @@ class GraphicView(View):
     def __init__(self, parent, sql_connector, user):
         super().__init__(parent )
         self.place(relwidth=1, relheight=1)
+
+        #Limits for the matplotlib ax
         self.x_min = -20
         self.x_max = 20
         self.y_min = -10
         self.y_max = 10
 
+        #Declare the function object
         self.__function = Function("")
         self.__string = ctk.StringVar(parent, value='')
         self.refresh_callback = lambda: print("")
 
+        #References of the main window, user and sql connector
         self.parent = parent
         self.user = user
         self.sql_connector = sql_connector
 
+        #Define the content of the frame
         self.graph_frame = ctk.CTkFrame(master=self)
         self.function_container = ctk.CTkFrame(master = self, width=300, height=50)
         self.function_input = ctk.CTkEntry(master = self.function_container, width=220, height=30)
@@ -35,22 +40,27 @@ class GraphicView(View):
         self.function_button = ctk.CTkButton(master = self.function_container, width=60, height=30)
         self.function_button.place(y=10, x=10)
 
+        #Style the figure and ax to look lie a cartesian plane
         self.fig, self.ax = plt.subplots()
         self.fig.set_size_inches(20, 5)
         self.fig.patch.set_facecolor('#ffffff')
-
         self.set_plot_style()
 
+        #Place the matplotlib figur in tkinter
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.graph_frame)
         self.canvas.draw()
 
+        #The matplotlib default toolbar needs to be imported separately inside the same frame of the frame as the figure
+        #Otherwise its harder to keep track of its size inside the window
         toolbar = NavigationToolbar2Tk(self.canvas, self.graph_frame)
         toolbar.update()
 
+        #This keeps the default key events, but requires an additional callback so i just set it as a blank print recieving the event
         self.canvas.mpl_connect(
             "key_press_event", lambda e: print("", end=""))
         self.canvas.mpl_connect("key_press_event", key_press_handler)
 
+        #Packing the figure and toolbar
         self.graph_frame.pack()
         self.canvas.get_tk_widget().pack()
         toolbar.pack()
@@ -64,7 +74,6 @@ class GraphicView(View):
         self.refresh_callback = callback
 
     def set_plot_style(self):
-
         #set self.axes limits and aspect ratio
         self.ax.set(xlim=(self.x_min-1, self.x_max+1), ylim=(self.y_min-1, self.y_max+1), aspect='equal')
 
@@ -89,8 +98,12 @@ class GraphicView(View):
         self.ax.grid(which='both', color='#a5a5a5', linestyle='-', linewidth=1, alpha=0.5)
         
 
+    #Clears the ax and takes the string from the input to process the function and plot it
+    #Also writes the graph in database if the user is logged in
     def change_graph(self):
         self.__function.set_string(self.__string.get())
+
+        #The function class raises an exception in case that the text inputed isnt valid, althought there is no feedback yet
         try:
             x_data, y_data = self.__function.evalFunction(np.arange(-20, 20, 0.1))
             self.ax.cla()
@@ -101,6 +114,7 @@ class GraphicView(View):
         except Exception as e:
             print(e)
 
+    #When graphing from the "My Graphs" view, the string is passed as an argument instead of reading it from the input
     def change_graph_history(self, string):
         self.parent.change_view('graphic')
         self.__function.set_string(string)
@@ -110,6 +124,7 @@ class GraphicView(View):
         self.ax.plot(x_data, y_data)
         self.canvas.draw()
 
+    #Writing the function string in database
     def save_graph(self):
         if self.user.loggedIn:
             self.sql_connector.insert_graph(self.user.get_id(), self.__function.string)
@@ -120,21 +135,26 @@ class EulerView(GraphicView):
     def __init__(self, parent, sql_connector, user):
         View.__init__(self, parent)
         self.place(relwidth=1, relheight=1)
+
+        #Defines the limits for the matplotlib ax
         self.x_min = -20
         self.x_max = 20
         self.y_min = -10
         self.y_max = 10
         self.initialPoint = (0, 0)
 
+        #References the app window, user and sql connector
         self.parent = parent
         self.sql_connector = sql_connector
         self.user = user
+        
+        #Function object
         self.__function = differentialEquation("", self.initialPoint)
         self.__string = ctk.StringVar(parent, value='')
         self.initialPoint_x = ctk.DoubleVar(parent, value=0)
         self.initialPoint_y = ctk.DoubleVar(parent, value=0)
 
-        #Content to be defined
+        #Content of the frame
         self.graph_frame = ctk.CTkFrame(master=self)
         self.function_container = ctk.CTkFrame(master = self, width=300, height=50)
         self.function_input = ctk.CTkEntry(master = self.function_container, width=220, height=30)
@@ -147,10 +167,10 @@ class EulerView(GraphicView):
         self.fig.patch.set_facecolor('#ffffff')
 
         self.set_plot_style()
-
         self.canvas = FigureCanvasTkAgg(self.fig,master=self.graph_frame)
         self.canvas.draw()
 
+        #Importing the toolbox, same as the graphic view
         toolbar = NavigationToolbar2Tk(self.canvas, self.graph_frame)
         toolbar.update()
 
