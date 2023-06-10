@@ -7,9 +7,13 @@ class View(ctk.CTkFrame):
     def raise_view(self):
         self.tkraise()
 
+#This frame is in charge of raising the needed view
+#All views are rendered behind the active one
 class ViewContainer(ctk.CTkFrame):
     def __init__(self, parent, view_dict={}):
         super().__init__(master=parent)
+
+        #Associates each view to a string
         self.__active_view = ""
         self.view_dict = view_dict
         self.place(relwidth=1, relheight=1, y=50)

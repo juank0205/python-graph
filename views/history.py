@@ -1,6 +1,8 @@
 from views.views import View
 import customtkinter as ctk
 
+#This class represents a single entry inside the scrollable frame
+#When clicked, excecutes a callback meant to change the view and plot the string that it holds
 class ChartFrame(ctk.CTkFrame):
     def __init__(self, parent, id, string, index, graphic_view):
         super().__init__(master=parent, height=40, width=parent.winfo_width(), cursor="hand2")
@@ -21,10 +23,12 @@ class ChartFrame(ctk.CTkFrame):
         string.place(relx=0.15, relwidth=0.7)
         delete.place(relx=0.85, relwidth=0.1)
 
+        #Excecutes the callback
         self.bind("<Button-1>", lambda e: self.graph())
         label_index.bind("<Button-1>", lambda e: self.graph())
         string.bind("<Button-1>", lambda e: self.graph())
 
+        #Binding the hover event to every widget inside the frame but the button
         self.bind("<Enter>", lambda e: self.configure(fg_color=self.__color2))
         self.bind("<Leave>", lambda e: self.configure(fg_color=self.__color1))
         label_index.bind("<Enter>", lambda e: self.configure(fg_color=self.__color2))
@@ -37,9 +41,11 @@ class ChartFrame(ctk.CTkFrame):
     def graph(self):
         self.graphic_view.change_graph_history(self.string)
         
+    #Deleting a graph from the database is not yet supported
     def delete(self):
         print("Luego")
 
+#Differential equations need some extra labels to show the initial coordinates of the graph
 class ChartFrame_DE(ChartFrame):
     def __init__(self, parent, id, string, index, initial_x, initial_y, graphic_view):
         ctk.CTkFrame.__init__(self, master=parent, height=40, width=parent.winfo_width(), cursor="hand2")
@@ -104,17 +110,20 @@ class HistoryView(View):
         self.scrollable_frame_DE = ctk.CTkScrollableFrame(master=self, label_text="Differential Equations")
         self.scrollable_frame_DE.place(relwidth=0.9, relheight=0.4, relx=0.05, rely=0.45)
 
+        #Lists that store the entries retrieved from the database
         self.graphs = []
         self.differential_equations = []
         self.get_graphs()
 
     def get_graphs(self):
+        #Iterates the list to create each clickable entry
         for frame in self.scrollable_frame_graphs.winfo_children():
             frame.destroy()
         self.graphs = self.sql_connector.get_user_graphs(self.user.get_id())
         for (index, graph) in enumerate(self.graphs):
             ChartFrame(self.scrollable_frame_graphs, graph[0], graph[1], index+1, self.graphic_view)
         
+    #Clears the scrollable view
     def delete_graphs(self):
         self.graphs = []
         for frame in self.scrollable_frame_graphs.winfo_children():
