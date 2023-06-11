@@ -7,7 +7,9 @@ The input of any mathematical expression **must be done in python syntax**.<br>
 > 3x+4<br>
 
 ***This works***<br>
-> 3\*x+4
+> 3\*x+4<br>
+
+For normal functions, **x** has to be the independant variable, and for differential equations are expected in the form of dy/dt=(...)
 ## Mathematical expressions
 You can use mathematical expressions included in numpy and the math library, such as sin() or cos(), just express them as np.sin() for example. <br>
 
