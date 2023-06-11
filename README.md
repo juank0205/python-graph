@@ -1,4 +1,7 @@
 # python-graph
+## AUTHORS
+***Andres Felipe Ospina***<br>
+***Juan Camilo Echeverry***<br>
 ## About
 This project implements a graphical interface for graphing mathematical functions or differential equations.<br>
 The input of any mathematical expression **must be done in python syntax**.<br>
